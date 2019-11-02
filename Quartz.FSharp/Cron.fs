@@ -146,7 +146,7 @@ module Cron =
         | Some increment -> Ok increment
         | None -> Error MonthIncrementOutOfRange        
 
-    let Initial =
+    let CreateDefaultCron () =
         { Seconds = "*"
           Minutes = "*"
           Hours = "*"
