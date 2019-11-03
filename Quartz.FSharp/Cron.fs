@@ -4,13 +4,13 @@ module Cron =
     open Quartz.Fsharp.Helpers
 
     type Cron =
-        { Seconds : string
-          Minutes : string
-          Hours : string
-          DayOfMonth : string
-          Month : string
-          DayOfWeek : string
-          Year : string }
+        { Seconds: string
+          Minutes: string
+          Hours: string
+          DayOfMonth: string
+          Month: string
+          DayOfWeek: string
+          Year: string }
 
     type CronBuilderError =
         | SecondsOutOfRange
@@ -69,33 +69,31 @@ module Cron =
 
     let private getNumericMonth month =
         match month with
-        | January -> Ok 0
-        | February -> Ok 1
-        | March -> Ok 2
-        | April -> Ok 3
-        | May -> Ok 4
-        | June -> Ok 5
-        | July -> Ok 6
-        | August -> Ok 7
-        | September -> Ok 8
-        | October -> Ok 9
-        | November -> Ok 10
-        | December -> Ok 11
+        | January -> Ok 1
+        | February -> Ok 2
+        | March -> Ok 3
+        | April -> Ok 4
+        | May -> Ok 5
+        | June -> Ok 6
+        | July -> Ok 7
+        | August -> Ok 8
+        | September -> Ok 9
+        | October -> Ok 10
+        | November -> Ok 11
+        | December -> Ok 12
         | Month.Numeric n ->
-            if (n < 0 || n > 11) then Error MonthOutOfRange
+            if (n < 1 || n > 12) then Error MonthOutOfRange
             else Ok n
 
     let private commonIncrementValidation increment =
-        if increment > 0 then
-            Some increment
-        else    
-            None                     
+        if increment > 0 then Some increment
+        else None
 
     let private validateSeconds secs =
         if (secs < 0 || secs > 59) then Error SecondsOutOfRange
-        else Ok secs    
+        else Ok secs
 
-    let private validateSecondsIncrement increment = 
+    let private validateSecondsIncrement increment =
         match commonIncrementValidation increment with
         | Some increment -> Ok increment
         | None -> Error SecondsIncrementOutOfRange
@@ -104,7 +102,7 @@ module Cron =
         if (minutes < 0 || minutes > 59) then Error MinutesOutOfRange
         else Ok minutes
 
-    let private validateMinutesIncrement increment = 
+    let private validateMinutesIncrement increment =
         match commonIncrementValidation increment with
         | Some increment -> Ok increment
         | None -> Error MinutesIncrementOutOfRange
@@ -113,7 +111,7 @@ module Cron =
         if (hours < 0 || hours > 23) then Error HoursOutOfRange
         else Ok hours
 
-    let private validateHoursIncrement increment = 
+    let private validateHoursIncrement increment =
         match commonIncrementValidation increment with
         | Some increment -> Ok increment
         | None -> Error HoursIncrementOutOfRange
@@ -122,7 +120,7 @@ module Cron =
         if (dayOfMonth < 0 || dayOfMonth > 31) then Error DayOfMonthOutOfRange
         else Ok dayOfMonth
 
-    let private validateDayOfMonthIncrement increment = 
+    let private validateDayOfMonthIncrement increment =
         match commonIncrementValidation increment with
         | Some increment -> Ok increment
         | None -> Error DayOfMonthIncrementOutOfRange
@@ -131,7 +129,7 @@ module Cron =
         if (year < 1970 || year > 2099) then Error YearOutOfRange
         else Ok year
 
-    let private validateYearIncrement increment = 
+    let private validateYearIncrement increment =
         match commonIncrementValidation increment with
         | Some increment -> Ok increment
         | None -> Error YearIncrementOutOfRange
@@ -141,12 +139,12 @@ module Cron =
         | Some increment -> Ok increment
         | None -> Error DayOfWeekIncrementOutOfRange
 
-    let private validateMonthIncrement increment =  
+    let private validateMonthIncrement increment =
         match commonIncrementValidation increment with
         | Some increment -> Ok increment
-        | None -> Error MonthIncrementOutOfRange        
+        | None -> Error MonthIncrementOutOfRange
 
-    let CreateDefaultCron () =
+    let CreateDefaultCron() =
         { Seconds = "*"
           Minutes = "*"
           Hours = "*"
@@ -156,67 +154,93 @@ module Cron =
           Year = "*" }
 
     let SetSeconds secs cron =
-        result { let! secs = validateSeconds secs
-                 return { cron with Seconds = (sprintf "%d" secs) } }
+        result {
+            let! secs = validateSeconds secs
+            return { cron with Seconds = (sprintf "%d" secs) } }
 
     let SetMinutes minutes cron =
-        result { let! minutes = validateMinutes minutes
-                 return { cron with Minutes = (sprintf "%d" minutes) } }
+        result {
+            let! minutes = validateMinutes minutes
+            return { cron with Minutes = (sprintf "%d" minutes) } }
 
     let SetHours hours cron =
-        result { let! hours = validateHours hours
-                 return { cron with Hours = (sprintf "%d" hours) } }
+        result {
+            let! hours = validateHours hours
+            return { cron with Hours = (sprintf "%d" hours) } }
 
     let SetDayOfMonth dayOfMonth cron =
-        result { let! dayOfMonth = validateDayOfMonth dayOfMonth
-                 return { cron with DayOfMonth = (sprintf "%d" dayOfMonth) } }
+        result {
+            let! dayOfMonth = validateDayOfMonth dayOfMonth
+            return { cron with
+                         DayOfMonth = (sprintf "%d" dayOfMonth)
+                         DayOfWeek = "?" }
+        }
 
     let SetMonth month cron =
-        result { let! month = getNumericMonth month
-                 return { cron with Month = (sprintf "%d" month) } }
+        result {
+            let! month = getNumericMonth month
+            return { cron with Month = (sprintf "%d" month) } }
 
     let SetDayOfWeek dayOfWeek cron =
-        result { let! dayOfWeek = getNumericDay dayOfWeek
-                 return { cron with DayOfWeek = (sprintf "%d" dayOfWeek) } }
+        result {
+            let! dayOfWeek = getNumericDay dayOfWeek
+            return { cron with
+                         DayOfWeek = (sprintf "%d" dayOfWeek)
+                         DayOfMonth = "?" }
+        }
 
     let SetYear year cron =
-        result { let! year = validateYear year
-                 return { cron with Year = (sprintf "%d" year) } }
+        result {
+            let! year = validateYear year
+            return { cron with Year = (sprintf "%d" year) } }
 
     let SetSecondsWithIncrement secs increment cron =
-        result { let! secs = validateSeconds secs
-                 let! increment = validateSecondsIncrement increment
-                 return { cron with Seconds = (sprintf "%d/%d" secs increment) } }         
+        result {
+            let! secs = validateSeconds secs
+            let! increment = validateSecondsIncrement increment
+            return { cron with Seconds = (sprintf "%d/%d" secs increment) } }
 
     let SetMinutesWithIncrement minutes increment cron =
-        result { let! minutes = validateMinutes minutes
-                 let! increment = validateMinutesIncrement increment
-                 return { cron with Minutes = (sprintf "%d/%d" minutes increment) } }
+        result {
+            let! minutes = validateMinutes minutes
+            let! increment = validateMinutesIncrement increment
+            return { cron with Minutes = (sprintf "%d/%d" minutes increment) } }
 
     let SetHoursWithIncrement hours increment cron =
-        result { let! hours = validateHours hours
-                 let! increment = validateHoursIncrement increment
-                 return { cron with Hours = (sprintf "%d/%d" hours increment) } }
+        result {
+            let! hours = validateHours hours
+            let! increment = validateHoursIncrement increment
+            return { cron with Hours = (sprintf "%d/%d" hours increment) } }
 
     let SetDayOfMonthWithIncrement dayOfMonth increment cron =
-        result { let! dayOfMonth = validateDayOfMonth dayOfMonth
-                 let! increment = validateDayOfMonthIncrement increment
-                 return { cron with DayOfMonth = (sprintf "%d/%d" dayOfMonth increment) } }
+        result {
+            let! dayOfMonth = validateDayOfMonth dayOfMonth
+            let! increment = validateDayOfMonthIncrement increment
+            return { cron with
+                         DayOfMonth = (sprintf "%d/%d" dayOfMonth increment)
+                         DayOfWeek = "?" }
+        }
 
     let SetMonthWithIncrement month increment cron =
-        result { let! month = getNumericMonth month
-                 let! increment = validateMonthIncrement increment
-                 return { cron with Month = (sprintf "%d/%d" month increment) } }
+        result {
+            let! month = getNumericMonth month
+            let! increment = validateMonthIncrement increment
+            return { cron with Month = (sprintf "%d/%d" month increment) } }
 
     let SetDayOfWeekWithIncrement dayOfWeek increment cron =
-        result { let! dayOfWeek = getNumericDay dayOfWeek
-                 let! increment = validateDayOfWeekIncrement increment
-                 return { cron with DayOfWeek = (sprintf "%d/%d" dayOfWeek increment) } }
+        result {
+            let! dayOfWeek = getNumericDay dayOfWeek
+            let! increment = validateDayOfWeekIncrement increment
+            return { cron with
+                         DayOfWeek = (sprintf "%d/%d" dayOfWeek increment)
+                         DayOfMonth = "?" }
+        }
 
     let SetYearWithIncrement year increment cron =
-        result { let! year = validateYear year
-                 let! increment = validateYearIncrement increment
-                 return { cron with Year = (sprintf "%d/%d" year increment) } }
+        result {
+            let! year = validateYear year
+            let! increment = validateYearIncrement increment
+            return { cron with Year = (sprintf "%d/%d" year increment) } }
 
     let SetMultipleSeconds secs cron =
         result {
@@ -243,7 +267,9 @@ module Cron =
         result {
             let! dom = daysOfMonth |> Helpers.traverseListOfResultsM validateDayOfMonth
             let dom = dom |> List.map (sprintf "%d")
-            return { cron with DayOfMonth = List.reduce (fun x y -> x + "," + y) dom }
+            return { cron with
+                         DayOfMonth = List.reduce (fun x y -> x + "," + y) dom
+                         DayOfWeek = "?" }
         }
 
     let SetMultipleMonths months cron =
@@ -257,7 +283,9 @@ module Cron =
         result {
             let! dow = daysOfWeek |> Helpers.traverseListOfResultsM getNumericDay
             let dow = dow |> List.map (sprintf "%d")
-            return { cron with DayOfWeek = List.reduce (fun x y -> x + "," + y) dow }
+            return { cron with
+                         DayOfWeek = List.reduce (fun x y -> x + "," + y) dow
+                         DayOfMonth = "?" }
         }
 
     let SetMultipleYears years cron =
@@ -270,9 +298,19 @@ module Cron =
     let SetEverySecond cron = { cron with Seconds = "*" }
     let SetEveryMinute cron = { cron with Minutes = "*" }
     let SetEveryHour cron = { cron with Hours = "*" }
-    let SetEveryDayOfMonth cron = { cron with DayOfMonth = "*" }
+
+    let SetEveryDayOfMonth cron =
+        { cron with
+              DayOfMonth = "*"
+              DayOfWeek = "?" }
+
     let SetEveryMonth cron = { cron with Month = "*" }
-    let SetEveryDayOfWeek cron = { cron with DayOfWeek = "*" }
+
+    let SetEveryDayOfWeek cron =
+        { cron with
+              DayOfWeek = "*"
+              DayOfMonth = "?" }
+
     let SetEveryYear cron = { cron with Year = "*" }
     let SetNoSpecificSecond cron = { cron with Seconds = "?" }
     let SetNoSpecificMinute cron = { cron with Minutes = "?" }
@@ -301,10 +339,17 @@ module Cron =
         else Ok { cron with Hours = (sprintf "%d-%d" lower upper) }
 
     let SetDayOfMonthRange lower upper cron =
-        if (lower < 1 || lower > 31) then Error DayOfMonthOutOfRange
-        else if (upper < 1 || upper > 31) then Error DayOfMonthOutOfRange
-        else if (lower >= upper) then Error DayOfMonthOutOfRange
-        else Ok { cron with DayOfMonth = (sprintf "%d-%d" lower upper) }
+        if (lower < 1 || lower > 31) then
+            Error DayOfMonthOutOfRange
+        else if (upper < 1 || upper > 31) then
+            Error DayOfMonthOutOfRange
+        else if (lower >= upper) then
+            Error DayOfMonthOutOfRange
+        else
+            Ok
+                { cron with
+                      DayOfMonth = (sprintf "%d-%d" lower upper)
+                      DayOfWeek = "?" }
 
     let SetMonthRange lower upper cron =
         result {
@@ -318,8 +363,12 @@ module Cron =
         result {
             let! lower = getNumericDay lower
             let! upper = getNumericDay upper
-            if (lower < upper) then return { cron with DayOfWeek = (sprintf "%d-%d" lower upper) }
-            else return! Error DayOfWeekOutOfRange
+            if (lower < upper) then
+                return { cron with
+                             DayOfWeek = (sprintf "%d-%d" lower upper)
+                             DayOfMonth = "?" }
+            else
+                return! Error DayOfWeekOutOfRange
         }
 
     let SetYearRange lower upper cron =
@@ -332,26 +381,30 @@ module Cron =
         if (Quartz.CronExpression.IsValidExpression cronString) then
             let fields = cronString.Split(' ')
             if (Array.length fields = 6) then
-                Ok { Seconds = fields.[0]
-                     Minutes = fields.[1]
-                     Hours = fields.[2]
-                     DayOfMonth = fields.[3]
-                     Month = fields.[4]
-                     DayOfWeek = fields.[5]
-                     Year = "" }
+                Ok
+                    { Seconds = fields.[0]
+                      Minutes = fields.[1]
+                      Hours = fields.[2]
+                      DayOfMonth = fields.[3]
+                      Month = fields.[4]
+                      DayOfWeek = fields.[5]
+                      Year = "" }
             else if (Array.length fields = 7) then
-                Ok { Seconds = fields.[0]
-                     Minutes = fields.[1]
-                     Hours = fields.[2]
-                     DayOfMonth = fields.[3]
-                     Month = fields.[4]
-                     DayOfWeek = fields.[5]
-                     Year = fields.[6] }
-            else Error CronStringInvalid
-        else Error CronStringInvalid
+                Ok
+                    { Seconds = fields.[0]
+                      Minutes = fields.[1]
+                      Hours = fields.[2]
+                      DayOfMonth = fields.[3]
+                      Month = fields.[4]
+                      DayOfWeek = fields.[5]
+                      Year = fields.[6] }
+            else
+                Error CronStringInvalid
+        else
+            Error CronStringInvalid
 
     let ToString cron =
         sprintf "%s %s %s %s %s %s %s" cron.Seconds cron.Minutes cron.Hours cron.DayOfMonth cron.Month cron.DayOfWeek
             cron.Year
-            
+
     let ValidateCronString cronString = Quartz.CronExpression.IsValidExpression cronString
