@@ -1,4 +1,4 @@
-module ``Unit tests for Cron module``
+module ``Unit tests for Cron module simple setters``
 
 open NUnit.Framework
 open FsUnit
@@ -34,7 +34,6 @@ let ``Creating a default cron``() =
 [<Test>]
 let ``Modifying seconds with valid value in default cron``() =
     let cron = Cron.CreateDefaultCron() |> Cron.SetSeconds 10
-    let defaultCron = Cron.CreateDefaultCron()
 
     match cron with
     | Ok cron ->
@@ -64,7 +63,6 @@ let ``Modifying seconds with invalid value in default cron``() =
 [<Test>]
 let ``Modifying minutes with valid value in default cron``() =
     let cron = Cron.CreateDefaultCron() |> Cron.SetMinutes 10
-    let defaultCron = Cron.CreateDefaultCron()
 
     match cron with
     | Ok cron ->
@@ -93,7 +91,6 @@ let ``Modifying minutes with invalid value in default cron``() =
 [<Test>]
 let ``Modifying hours with valid value in default cron``() =
     let cron = Cron.CreateDefaultCron() |> Cron.SetHours 10
-    let defaultCron = Cron.CreateDefaultCron()
 
     match cron with
     | Ok cron ->
@@ -122,7 +119,6 @@ let ``Modifying hours with invalid value in default cron``() =
 [<Test>]
 let ``Modifying day of month with valid value in default cron``() =
     let cron = Cron.CreateDefaultCron() |> Cron.SetDayOfMonth 10
-    let defaultCron = Cron.CreateDefaultCron()
 
     match cron with
     | Ok cron ->
@@ -151,7 +147,6 @@ let ``Modifying day of month with invalid value in default cron``() =
 [<Test>]
 let ``Modifying month with valid value in default cron``() =
     let cron = Cron.CreateDefaultCron() |> Cron.SetMonth Cron.January
-    let defaultCron = Cron.CreateDefaultCron()
 
     match cron with
     | Ok cron ->
@@ -165,7 +160,6 @@ let ``Modifying month with valid value in default cron``() =
 [<Test>]
 let ``Modifying day of week with valid value in default cron``() =
     let cron = Cron.CreateDefaultCron() |> Cron.SetDayOfWeek Cron.Tuesday
-    let defaultCron = Cron.CreateDefaultCron()
 
     match cron with
     | Ok cron ->
@@ -179,7 +173,6 @@ let ``Modifying day of week with valid value in default cron``() =
 [<Test>]
 let ``Modifying year with valid value in default cron``() =
     let cron = Cron.CreateDefaultCron() |> Cron.SetYear 1995
-    let defaultCron = Cron.CreateDefaultCron()
 
     match cron with
     | Ok cron ->
