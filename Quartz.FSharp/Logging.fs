@@ -11,18 +11,19 @@ module Logging =
 
             member this.OpenMappedContext(_, _) =
                 { new IDisposable with
-                      member this.Dispose() = () }
+                    member this.Dispose() = () }
+
 
             member this.OpenNestedContext _ =
                 { new IDisposable with
-                      member this.Dispose() = () }
+                    member this.Dispose() = () }
 
             member this.GetLogger _name = new Logger(f)
 
     let SetQuartzLoggingFunction f =
-        let loggerFunction level (func : Func<string>) exc parameters =
-            let wrappedFunction = Helpers.nullValuesToOptions (fun (x : Func<string>) -> (fun () -> x.Invoke())) func
-            let wrappedException = Helpers.nullValuesToOptions id exc
+        let loggerFunction level (func: Func<string>) exc parameters =
+            let wrappedFunction = Helpers.NullValuesToOptions (fun (x: Func<string>) -> (fun () -> x.Invoke())) func
+            let wrappedException = Helpers.NullValuesToOptions id exc
             f level wrappedFunction wrappedException (parameters |> List.ofArray)
         LogProvider.SetCurrentLogProvider(QuartzLoggerWrapper(loggerFunction))
 

@@ -244,28 +244,28 @@ module Cron =
 
     let SetMultipleSeconds secs cron =
         result {
-            let! secs = secs |> Helpers.traverseListOfResultsM validateSeconds
+            let! secs = secs |> Helpers.TraverseListOfResultsM validateSeconds
             let secs = secs |> List.map (sprintf "%d")
             return { cron with Seconds = List.reduce (fun x y -> x + "," + y) secs }
         }
 
     let SetMultipleMinutes minutes cron =
         result {
-            let! minutes = minutes |> Helpers.traverseListOfResultsM validateMinutes
+            let! minutes = minutes |> Helpers.TraverseListOfResultsM validateMinutes
             let minutes = minutes |> List.map (sprintf "%d")
             return { cron with Minutes = List.reduce (fun x y -> x + "," + y) minutes }
         }
 
     let SetMultipleHours hours cron =
         result {
-            let! hours = hours |> Helpers.traverseListOfResultsM validateHours
+            let! hours = hours |> Helpers.TraverseListOfResultsM validateHours
             let hours = hours |> List.map (sprintf "%d")
             return { cron with Hours = List.reduce (fun x y -> x + "," + y) hours }
         }
 
     let SetMultipleDaysOfMonth daysOfMonth cron =
         result {
-            let! dom = daysOfMonth |> Helpers.traverseListOfResultsM validateDayOfMonth
+            let! dom = daysOfMonth |> Helpers.TraverseListOfResultsM validateDayOfMonth
             let dom = dom |> List.map (sprintf "%d")
             return { cron with
                          DayOfMonth = List.reduce (fun x y -> x + "," + y) dom
@@ -274,14 +274,14 @@ module Cron =
 
     let SetMultipleMonths months cron =
         result {
-            let! months = months |> Helpers.traverseListOfResultsM getNumericMonth
+            let! months = months |> Helpers.TraverseListOfResultsM getNumericMonth
             let months = months |> List.map (sprintf "%d")
             return { cron with Month = List.reduce (fun x y -> x + "," + y) months }
         }
 
     let SetMultipleDaysOfWeek daysOfWeek cron =
         result {
-            let! dow = daysOfWeek |> Helpers.traverseListOfResultsM getNumericDay
+            let! dow = daysOfWeek |> Helpers.TraverseListOfResultsM getNumericDay
             let dow = dow |> List.map (sprintf "%d")
             return { cron with
                          DayOfWeek = List.reduce (fun x y -> x + "," + y) dow
@@ -290,7 +290,7 @@ module Cron =
 
     let SetMultipleYears years cron =
         result {
-            let! years = years |> Helpers.traverseListOfResultsM validateYear
+            let! years = years |> Helpers.TraverseListOfResultsM validateYear
             let years = years |> List.map (sprintf "%d")
             return { cron with Year = List.reduce (fun x y -> x + "," + y) years }
         }

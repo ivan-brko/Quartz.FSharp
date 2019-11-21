@@ -53,14 +53,15 @@ module Context =
 
         new() = new QuartzSchedulingContext(Configuration.CreateDefaultQuartzConfiguration())
 
-        //check underlying properties of schedulerFacotry to determine configuration 
+        //check underlying properties of schedulerFacotry to determine configuration
         member this.IsStoredInRam =
             match (getSchedulerFactoryPropertiesReader factory) with
-            | Some propertiesReader -> 
-                let serializationType = propertiesReader.GetStringProperty("quartz.jobStore.type", "Quartz.Simpl.RAMJobStore, Quartz")
+            | Some propertiesReader ->
+                let serializationType =
+                    propertiesReader.GetStringProperty("quartz.jobStore.type", "Quartz.Simpl.RAMJobStore, Quartz")
                 serializationType = "Quartz.Simpl.RAMJobStore, Quartz"
             | None -> false //TODO: think about this, should this be more permissive?
-            
+
 
         member this.Scheduler = async {
                                     let! scheduler = factory.GetScheduler() |> Async.AwaitTask
@@ -73,6 +74,8 @@ module Context =
         interface IDisposable with
             member this.Dispose() =
                 async { do! this.Scheduler.Shutdown() |> Async.AwaitTask } |> Async.RunSynchronously
+
+    //we allow using the context both as .net object and through a more idiomatic f# style by chainging functions
 
     let StartRunningScheduledTasks(context: QuartzSchedulingContext) = context.StartRunningScheduledTasks()
 
