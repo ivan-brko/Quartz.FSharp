@@ -13,8 +13,8 @@ module Configuration =
     let CreateDefaultQuartzConfiguration() = QuartzConfiguration(NameValueCollection())
 
     //todo: add more functions like this for commonly used properties
-    let ChangeThreadCountInConfiguration threadCount (QuartzConfiguration properties) =
-        if threadCount >= 1 && threadCount <= 20 then //TODO: these numbers are random, think about this later
+    let SetThreadCount (QuartzConfiguration properties) threadCount =
+        if threadCount >= 1 && threadCount <= 20 then  //TODO: these numbers are random, think about this later
             //this will create new NVCollection and copy elements from the initial one to it
             //these collections will usually be empty here, or only contain a couple of elements and this
             //will only get called at initialization so it the overhead is not too big, and this allows
@@ -22,11 +22,19 @@ module Configuration =
             let newProperties = NameValueCollection(properties)
             newProperties.Set("quartz.threadPool.threadCount", threadCount.ToString())
             Ok(QuartzConfiguration newProperties)
-        elif threadCount < 1 then Error ThreadCountTooLow
-        else Error ThreadCountTooHigh
+        elif threadCount < 1 then
+            Error ThreadCountTooLow
+        else
+            Error ThreadCountTooHigh
+
+    let SetSchedulerInstanceName (QuartzConfiguration properties) schedulerInstanceName =
+        let newProperties = NameValueCollection(properties)
+        newProperties.Set("quartz.scheduler.instanceName", schedulerInstanceName)
+        QuartzConfiguration newProperties
+
 
     //todo: in the future, remove this function and add safe setters for all properties
-    let ChangeInProperties key value (QuartzConfiguration properties) =
+    let ChangeInProperties (QuartzConfiguration properties) key value =
         let newProperties = NameValueCollection(properties)
         newProperties.Set(key, value)
         QuartzConfiguration newProperties
