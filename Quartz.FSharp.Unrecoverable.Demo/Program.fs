@@ -10,8 +10,15 @@ let main argv =
     // create a cron that will run the task every second
     let cron = Cron.CreateDefaultCron() |> Cron.SetEverySecond
 
-    // create new context without any configuration
-    use context = new Context.QuartzSchedulingContext()
+    //create a default configuration and set the thread count to 5
+    let configuration = Configuration.CreateDefaultQuartzConfiguration()
+                            |> Configuration.SetThreadCount 5
+
+    // create new context
+    // use created configuration if it is valid, if not use no configuration
+    use context = match configuration with 
+                  | Ok configuration -> new Context.QuartzSchedulingContext(configuration)
+                  | Error _ ->  new Context.QuartzSchedulingContext()
     
     // the logging function
     // level gives the level of logging message (DEBUG, INFO...), funOpt is optional that, 
