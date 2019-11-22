@@ -8,6 +8,15 @@ let main argv =
     printfn "Running a demo of Quartz.FSharp unrecoverable job"
     let cron = Cron.CreateDefaultCron() |> Cron.SetEverySecond
     use context = new Context.QuartzSchedulingContext()
+    
+    let loggerFunction level funOpt _ _ = 
+        match funOpt with
+        | Some f -> printfn "Logger: %A: %s" level (f())
+                    true
+        | None -> true            
+
+    Logging.SetQuartzLoggingFunction loggerFunction    
+
     let schedulingResult =
         UnrecoverableJob.ScheduleJobForCommonGroup context cron
             Context.TaskPriority.Medium "Example Task"
