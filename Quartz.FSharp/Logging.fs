@@ -13,14 +13,18 @@ module Logging =
                 { new IDisposable with
                     member this.Dispose() = () }
 
-
-
             member this.OpenNestedContext _ =
                 { new IDisposable with
                     member this.Dispose() = () }
 
             member this.GetLogger _name = new Logger(f)
 
+    /// <summary>
+    /// Sets a logging function.
+    /// This function is just an f# wrapper around LibLog logging interface.
+    /// The F# wrapper never calls this function, only the Quartz.Net does.
+    /// </summary>
+    /// <param name="f"> Function to do all the logging</param>
     let SetQuartzLoggingFunction f =
         let loggerFunction level (func: Func<string>) exc parameters =
             let wrappedFunction = Helpers.nullValuesToOptions (fun (x: Func<string>) -> (fun () -> x.Invoke())) func
@@ -28,4 +32,8 @@ module Logging =
             f level wrappedFunction wrappedException (parameters |> List.ofArray)
         LogProvider.SetCurrentLogProvider(QuartzLoggerWrapper(loggerFunction))
 
+    /// <summary>
+    /// Sets a LibLog logger directly for Quartz.net
+    /// </summary>
+    /// <param name="l"> logger</param>
     let SetQuartzLogger l = LogProvider.SetCurrentLogProvider(l)

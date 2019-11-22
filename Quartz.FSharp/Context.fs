@@ -48,9 +48,16 @@ module Context =
         | Medium -> 10
         | High -> 100
 
+    /// <summary>
+    /// This class holds the Quartz scheduling context, used for scheduling all job types
+    /// </summary>
+    /// <param name="properties">Configuration to be used with this scheduling context</param>
     type QuartzSchedulingContext(properties: QuartzConfiguration) =
         let factory = StdSchedulerFactory(Unwrap properties)
 
+        /// <summary>
+        /// Empty constructor for <c>QuartzSchedulingContext</c>. Creates the context with default params.
+        /// </summary>
         new() = new QuartzSchedulingContext(Configuration.CreateDefaultQuartzConfiguration())
 
         //check underlying properties of schedulerFacotry to determine configuration
@@ -77,6 +84,15 @@ module Context =
 
     //we allow using the context both as .net object and through a more idiomatic f# style by chainging functions
 
+
+    /// <summary>
+    /// Start running all jobs scheduled with this context
+    /// </summary>
+    /// <param name="context">Context for which we want to run all jobs</param>
     let StartRunningScheduledTasks(context: QuartzSchedulingContext) = context.StartRunningScheduledTasks()
 
+    /// <summary>
+    /// Pause running all jobs scheduled with this context
+    /// </summary>
+    /// <param name="context">Context for which we want to pause all jobs</param>
     let PauseAllJobs(context: QuartzSchedulingContext) = context.PauseAllJobs()
