@@ -1,6 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>Quartz.FSharp</PackageId>
+    <Version>0.10.0</Version>
+    <Authors>ivan.brko</Authors>
+    <Description>F# wrapper over Quartz.net library</Description>
+    <RepositoryUrl>https://github.com/ivan-brko/Quartz.FSharp</RepositoryUrl>
+    <Copyright>Copyright (c) 2019 Ivan Brko</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageTags>fsharp;quartz;quartz.net;quartz.fsharp</PackageTags>
+    <PackageIcon>quartz.fsharp.icon.png</PackageIcon>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Helpers.fs" />
@@ -9,6 +18,7 @@
     <Compile Include="Configuration.fs" />
     <Compile Include="Context.fs" />
     <Compile Include="UnrecoverableJob.fs" />
+    <None Include="../project_metadata/quartz.fsharp.icon.png" Pack="true" PackagePath=""/>
   </ItemGroup>
   <Import Project="..\.paket\Paket.Restore.targets" />
 </Project>

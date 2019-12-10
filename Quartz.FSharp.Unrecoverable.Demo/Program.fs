@@ -33,6 +33,7 @@ let main argv =
         | None -> true            
 
     // Use the logging function created above
+    // Logging is optional, we don't have to set any logger if it is not needed
     Logging.SetQuartzLoggingFunction loggerFunction    
 
     // Schedule the task
@@ -47,7 +48,7 @@ let main argv =
     | Error(_) -> printfn "Error while trying to schedule task"
 
     // Wait for <enter> to complete the program
-    let line = Console.ReadLine() |> ignore
+    Console.ReadLine() |> ignore
     0 // return an integer exit code
 
 

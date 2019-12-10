@@ -1,14 +1,19 @@
+![logo](project_metadata/quartz.fsharp.medium.png)
+
 # Quartz.FSharp
 
 ## Basic info
-This is an F# wrapper for [Quartz.net library](https://www.quartz-scheduler.net/). It allows using the library from a more F# friendly API.
+This is an F# wrapper for [Quartz.net library](https://www.quartz-scheduler.net/). It allows using the library from a more F# friendly API. This wrapper is not written or maintained by the Quartz.<span></span>net team or in any way connected to them. 
+
+## Getting the library
+This library is available as [nuget package](https://www.nuget.org/packages/Quartz.FSharp/) (can be used by both nuget and paket). 
 
 ## Supported Quartz.<span></span>net functionalities
 At this moment, support is only added for unrecoverable jobs (jobs stored in RAM). This wrapper library is a result of needing to use Quartz.<span></span>net unrecoverable jobs in another project so no immediate support is planned for other types of serializations. However, other types of jobs/serializations can be added if needed.
 
 ## Example usage
-Simple example can be found in Quartz.FSharp.Unrecoverable.Demo project.
-Minimal version of that is following:
+Commented simple example can be found in Quartz.FSharp.Unrecoverable.Demo project.
+Following is minimal version of that example:
 
 ```fsharp
     let cron = Cron.CreateDefaultCron() |> Cron.SetEverySecond
@@ -25,7 +30,7 @@ Minimal version of that is following:
 ```
 
 ## Reporting issues
-Issue report should contain basic information about the issue and instructions on how to reproduce it.
+Issue reports should contain basic information about the issue and instructions on how to reproduce it, as well as version of the library for which the issue is reported.
 
 ## Contributing
 All contributions are welcome, both bug-fixes and improvements/new features.
